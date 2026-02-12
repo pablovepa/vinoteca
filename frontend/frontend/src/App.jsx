@@ -1,87 +1,62 @@
-import React from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Shop from './pages/Shop'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import GameDetails from './pages/GameDetails'
-import Purchase from './pages/Purchase'
-import AdminPanel from './pages/AdminPanel'
-import AdminGameList from './pages/AdminGameList'
-import AdminEditGame from './pages/Admin/AdminEditGame'
-import AdminAddGame from './pages/Admin/AdminAddGame'
-import Library from './pages/Library'
+import { useEffect, useState } from 'react';
+import FormularioVino from './components/FormularioVino';
 
-import { useAuth } from './auth/AuthProvider'
+function App() {
+  const [vinos, setVinos] = useState([]);
+
+  // Función para traer vinos del backend
+  const obtenerVinos = async () => {
+    const res = await fetch('http://localhost:5000/api/vinos');
+    const data = await res.json();
+    setVinos(data);
+  };
+
+  useEffect(() => {
+    obtenerVinos();
+  }, []);
+
+  // Esta función se ejecuta cuando el formulario guarda un vino con éxito
+  const manejarNuevoVino = (nuevoVino) => {
+    setVinos([...vinos, nuevoVino]);
+  };
 
 
-
-function PrivateRoute({ children }) {
-  const { user, loading } = useAuth()
-  if (loading) return <div>Loading...</div>
-  return user ? children : <Navigate to="/login" />
-}
-
-function AdminRoute({ children }) {
-  const { user } = useAuth()
-  if (!user) return <Navigate to="/login" />
-  return user.isAdmin ? children : <Navigate to="/" />
-}
-
-export default function App() {
   return (
-    <div className="min-h-screen">
-      <Navbar />
+    <div style={{
+      maxWidth: '800px',
+      margin: '40px auto',
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#222', // Color de letra principal
+      backgroundColor: '#fff' // Fondo de la página
+    }}>
+      <h1 style={{ color: '#722f37', textAlign: 'center' }}>🍷 Mi Vinoteca Digital</h1>
 
-      <Routes>
+      <FormularioVino onVinoAgregado={manejarNuevoVino} />
 
-        {/* PANEL ADMIN */}
-        <Route path="/admin" element={
-          <AdminRoute>
-          <AdminPanel />
-         </AdminRoute>
-        } />
-
-        {/* LISTA DE JUEGOS ADMIN */}
-        <Route path="/admin/games" element={
-          <AdminRoute>
-            <AdminGameList />
-          </AdminRoute>
-        } />
-
-        <Route path="/admin/add" element={
-          <AdminRoute>
-            <AdminAddGame />
-          </AdminRoute>
-        } />
-
-
-        {/* EDITAR */}
-        <Route path="/admin/edit/:id" element={
-          <AdminRoute>
-            <AdminEditGame />
-          </AdminRoute>
-        } />
-
-        {/* RUTAS PÚBLICAS */}
-        <Route path="/" element={<Shop />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/games/:id" element={<GameDetails />} />
-
-        {/* RUTAS PRIVADAS */}
-        <Route path="/purchase/:id" element={
-          <PrivateRoute><Purchase /></PrivateRoute>
-        } />
-
-        <Route path="/library" element={
-          <PrivateRoute>
-          <Library />
-        </PrivateRoute>
-        } />
-
-      </Routes>
-
+      <h2>Inventario Actual</h2>
+      <div style={styles.lista}>
+        {vinos.map(vino => (
+          <div key={vino._id} style={styles.tarjeta}>
+            <strong>{vino.nombre}</strong> - {vino.bodega}
+            <span style={{ color: '#722f37', fontWeight: 'bold' }}> ${vino.precio}</span>
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
+const styles = {
+  lista: {
+    display: 'grid',
+    gap: '10px'
+  },
+  tarjeta: {
+    padding: '15px',
+    borderBottom: '1px solid #eee',
+    display: 'flex',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff'
+  }
+};
+export default App;

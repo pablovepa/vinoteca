@@ -1,5 +1,5 @@
 {
-  "name": "vinoteca-backend",
+  "name": "backend",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -7,14 +7,12 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "dotenv": "^16.0.0",
     "express": "^4.18.2",
-    "mongoose": "^7.0.0"
+    "mongoose": "^7.0.0",
+    "dotenv": "^16.0.0"
   },
   "main": "index.js",
-  "devDependencies": {
-    "concurrently": "^9.2.1"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pablovepa/vinoteca.git"

@@ -1,19 +1,16 @@
-const Vino = require('../models/Vino');
+import Vino from '../models/Vino.js';
 
-exports.createVino = async (req, res) => {
+export const createVino = async (req, res) => {
   try {
-    const { nombre, bodega, precio, stock } = req.body;
-
-    const vino = new Vino({ nombre, bodega, precio, stock });
-    await vino.save();
-
-    res.json({ message: "Vino creado exitosamente", vino });
-  } catch (err) {
-    res.status(500).json({ message: "Error al crear vino", error: err });
+    const nuevoVino = new Vino(req.body);
+    const guardado = await nuevoVino.save();
+    res.status(201).json(guardado);
+  } catch (error) {
+    res.status(400).json({ mensaje: "Error al guardar el vino", error: error.message });
   }
 };
 
-exports.updateVino = async (req, res) => {
+/*exports.updateVino = async (req, res) => {
   try {
     const updated = await Vino.findByIdAndUpdate(
       req.params.id,
@@ -26,8 +23,13 @@ exports.updateVino = async (req, res) => {
     res.status(500).json({ message: "Error al actualizar vino", error: err });
   }
 };
+*/
 
-exports.getVinos = async (req, res) => {
-  const vinos = await Vino.find();
-  res.json(vinos);
+export const getVinos = async (req, res) => {
+  try {
+    const vinos = await Vino.find();
+    res.status(200).json(vinos);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener vinos", error: error.message });
+  }
 };
