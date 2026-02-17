@@ -16,8 +16,8 @@ export default function Navbar() {
       {/* Logo y enlaces principales */}
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2 text-xl font-bold text-white hover:text-blue-400">
-        <img src={logo} alt="Logo" className="w-12 h-12" />
-        Electric Games
+          <img src={logo} alt="Logo" className="w-12 h-12" />
+          Vinoteca G1
         </Link>
 
         <Link
